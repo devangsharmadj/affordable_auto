@@ -1,0 +1,209 @@
+{% extends 'index.html' %}
+
+    <!-- ***** Header Area End ***** -->
+    {% block content %}
+    <!-- ***** Call to Action Start ***** -->
+    <section class="section section-bg" id="call-to-action" style="background-image: url(static/assets/images/banner-image-1-1920x500.jpg)">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 offset-lg-1">
+                    <div class="cta-content">
+                        <br>
+                        <br>
+                        <h2>Our <em>Inventory</em></h2>
+                        <p>Quality Vehicles, at Affordable Prices</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ***** Call to Action End ***** -->
+
+    <!-- ***** Fleet Starts ***** -->
+    <section class="section" id="trainers">
+        <div class="container">
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="trainer-item">
+                        <div class="image-thumb">
+                            <img src="/{{ i['image'] }}" alt="">
+                        </div>
+                        <div class="down-content">
+                            <span>
+                                {{ "${:,.2f}".format(i['price']) }}
+                            </span>
+
+                            <h4>{{ i['year'] }} {{ i['make']}} {{ i['model'] }}</h4>
+
+                            <p>
+                                <i class="fa fa-dashboard"></i> {{ "{:,}".format(i['mileage']) }} mi &nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-cube"></i> {{ i['body_type'] }} &nbsp;&nbsp;&nbsp;
+                                <i class="fa fa-cog"></i> {{ i['fuel_type'] }} &nbsp;&nbsp;&nbsp;
+                            </p>
+
+                            <ul class="social-icons">
+                                <li><a href="{{i['model']}}.html">+ View Car</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                
+                </div>
+                <div class="col-md-12 paymentCalc">
+
+  <div class="col-md-6">
+    
+  <form id="loanCalc" action="" method="get" class="">
+
+    <div class="form-row"> 
+      <div class="form-group col-md-12">
+        <h2>Calculate Your Installment Plan</h2>
+      </div>
+    </div>  
+
+    <div class="form-row">    
+      <div class="form-group col-md-6">
+        <label for="vehiclePrice">Vehicle Price</label>
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" id="vehiclePrice" placeholder="Vehicle Price">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="downPayment">Down Payment</label>
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" id="downPayment" placeholder="Down Payment" value="0">   
+      </div>
+      <div class="form-group col-md-6">
+        <label for="tradeValue">Trade-In Value</label>
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" id="tradeValue" placeholder="Trade In Value" value="0">
+      </div>
+    </div>    
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="intRate">Interest Rate</label>
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" id="intRate" placeholder="Interest Rate" value="3.25">  
+      </div>
+      <div class="form-group col-md-6">
+        <label for="loanTerm">Loan Term</label>
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" id="loanTerm" placeholder="Loan Term (ex: 36 Months)">
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+      <a href="#" class="calcBtn" onclick="calculatePayments()" id="calculate" value="Calulate">Calculate</a>
+      </div>
+    </div>
+                  
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <p style="font-size: 18px; color: black">Estimated Monthly Payment:
+        </p>
+        <div id="paymentResults"></div>
+      </div>  
+    </div>
+
+  </form>  
+              <script>
+                function calculatePayments(){
+  var vehiclePrice = document.getElementById('vehiclePrice').value,
+      loanTerm = document.getElementById('loanTerm').value,
+      intRate = document.getElementById('intRate').value,
+      downPayment = document.getElementById('downPayment').value,
+      tradeValue = document.getElementById('tradeValue').value,
+      amount = parseInt(vehiclePrice),
+      months = parseInt(loanTerm),
+      down  = parseInt(downPayment),
+      trade =  parseInt(tradeValue),
+      totalDown  = down + trade
+      annInterest = parseFloat(intRate),
+      monInt = annInterest / 1200;
+
+      if(!amount){
+        alert('Please add a loan amount');
+        return;
+      }
+
+      if(!months){
+        months = 60;
+        loanTerm = document.getElementById('loanTerm').value = '60';
+      }
+
+      if(!downPayment){
+        down = 0;
+        downPayment = document.getElementById('downPayment').value = '0';
+      }
+
+      if(!trade){
+        trade = 0;
+        tradeValue = document.getElementById('tradeValue').value = '0';
+      }
+
+      if(!annInterest){
+        annInterest = 3.25;
+        intRate = document.getElementById('intRate').value = '3.25';
+      }
+
+
+      var calc = ((monInt + (monInt / (Math.pow((1 + monInt), months) -1))) * (amount - (totalDown || 0))).toFixed(2);
+
+      var paymentResults = document.getElementById('paymentResults');
+      paymentResults.style.display = 'inline';
+      paymentResults.innerHTML = '';
+      var results = document.createElement('div');
+      results.innerHTML = '$' + calc + '/month</h3>';
+      paymentResults.append(results);
+
+}
+              </script>
+            </div>
+
+            <br>
+
+        </div>
+            </div>
+    <style>
+      body{
+  padding:20px;
+}
+
+#loanCalc input{
+  padding:10px;
+  display:block;
+}
+
+.clearfix{
+  clear:both!important;
+}
+
+.paymentCalc{
+  background-color: #f7f7f7;
+  border: 1px solid #d3d3d3;
+  padding: 35px 35px;
+  overflow: auto;
+}
+
+.calcBtn{
+  display:inline-block;
+  background:#c62233;
+  color:#fff;
+  text-align:center;
+  padding:10px 20px;
+  border-radius: 5px;
+}
+
+#paymentResults{
+  display:inline-block;
+  background: none;
+  color: black;
+  text-align: left;
+  padding:15px 40px;
+  border-radius: 5px;
+}
+    </style>
+    <!-- ***** Fleet Ends ***** -->
+{% endblock %}
